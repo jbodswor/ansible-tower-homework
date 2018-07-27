@@ -1,5 +1,6 @@
 ---
 # Playbook to provision instances on osp
+# Reverting to older version
 
 - hosts: localhost
   vars:
