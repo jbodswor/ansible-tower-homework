@@ -1,0 +1,7 @@
+---
+# Playbook to delete instances on osp
+
+- hosts: workstation
+  become: yes
+  roles:
+    - osp-delete-instances
