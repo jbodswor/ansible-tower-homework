@@ -15,18 +15,18 @@
   roles:
     - osp-facts
 
-- hosts: apps
-  gather_facts: false
-  tasks:
-  - ping:
- 
-- hosts: frontends
-  gather_facts: false
-  tasks:
-  - ping:
- 
-- hosts: appdbs
-  gather_facts: false
-  tasks:
-  - ping:
+    - hosts: apps
+      gather_facts: false
+      tasks:
+      - ping:
+    
+    - hosts: frontends
+      gather_facts: false
+      tasks:
+      - ping:
+    
+    - hosts: appdbs
+      gather_facts: false
+      tasks:
+      - ping:
  
