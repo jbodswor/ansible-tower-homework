@@ -1,0 +1,12 @@
+---
+# Playbook to patch sudoers for postgres install
+
+- hosts: jumpbox
+  become: yes
+  roles:
+    - osp-facts
+
+- hosts: appdbs
+  gather_facts: false
+  roles:
+  - patch-sudoers

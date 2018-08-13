@@ -1,0 +1,9 @@
+---
+# tasks file for patch-sudoers
+
+- name: disable sudo require tty
+  replace:
+    path: /etc/sudoers
+    regexp: '^Defaults\s*requiretty'
+    replace: 'Defaults  !requiretty'
+    backup: yes
