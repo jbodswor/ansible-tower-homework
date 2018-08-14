@@ -6,7 +6,6 @@
   roles:
     - osp-facts
 
-
 - hosts: frontends
   gather_facts: false
   roles:
