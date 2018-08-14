@@ -1,0 +1,13 @@
+---
+# Playbook to provision instances on osp
+# Trying to remove the localhost option
+
+- hosts: jumpbox
+  become: yes
+  roles:
+    - osp-facts
+
+- hosts: frontends
+  gather_facts: false
+  roles:
+  - haproxy
