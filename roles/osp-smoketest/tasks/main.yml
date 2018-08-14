@@ -5,14 +5,14 @@
   os_server_facts:
     cloud: ospcloud
     server: 'frontend'
-  register: openstack_result
+  register: result
 
 - name: Check that you can curl the frontends
   uri:
     url: "http://{{ item.public_v4 }}"
     return_content: yes
   with_items:
-    - "{{ openstack_result.ansible_facts.openstack_servers }}"
+    - "{{ result.ansible_facts.openstack_servers }}"
   register: webpage
 
 - name: Fail if 'Ansible' is not in the page content

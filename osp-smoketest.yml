@@ -2,12 +2,23 @@
 # Playbook to smoke test frontend on osp
 
 - hosts: jumpbox
-  become: yes
-  roles:
-    - osp-facts
-
-- hosts: frontends
   gather_facts: false
   become: yes
-  roles:
-  - osp-smoketest
+  tasks:
+  - name: OpenStack frontend servers
+    os_server_facts:
+      cloud: ospcloud
+      server: 'frontend'
+    register: result
+
+  - name: Check that you can curl the frontends
+    uri:
+      url: "http://{{ item.public_v4 }}"
+      return_content: yes
+    with_items:
+      - "{{ result.ansible_facts.openstack_servers }}"
+    register: webpage
+
+  - name: Fail if 'Ansible' is not in the page content
+    fail:
+    when: "'Ansible has done its job' not in webpage.content"
