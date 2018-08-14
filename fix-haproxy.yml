@@ -9,5 +9,6 @@
 
 - hosts: frontends
   gather_facts: false
+  become: yes
   roles:
   - haproxy
