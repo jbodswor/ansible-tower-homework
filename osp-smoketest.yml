@@ -1,0 +1,13 @@
+---
+# Playbook to smoke test frontend on osp
+
+- hosts: jumpbox
+  become: yes
+  roles:
+    - osp-facts
+
+
+- hosts: frontends
+  gather_facts: false
+  roles:
+  - osp-smoketest

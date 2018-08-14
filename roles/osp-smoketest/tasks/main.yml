@@ -1,3 +1,14 @@
 ---
 # tasks file for osp-smoketest
 
+- name: Check that you can curl the frontends
+  uri:
+    url: "http://{{ item.public_v4 }}"
+    return_content: yes
+  with_items:
+    - "{{ result.ansible_facts.openstack_servers }}"
+  register: webpage
+
+- name: Fail if 'Ansible' is not in the page content
+  fail:
+  when: "'Ansible' not in webpage.content"
