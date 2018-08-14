@@ -11,22 +11,23 @@
   gather_facts: true
   become: true
   roles:
-    - role: base-config
+    - base-config
 
 - name: Deploy haproxy
   hosts: frontends
   become: true
   roles:
-    - role: haproxy
+    - haproxy
 
 - name: Deploy Tomcat
   hosts: apps
   become: true
   roles:
-    - role: tomcat
+    - tomcat
 
 - name: Deploy PostgreSQL
   hosts: appdbs
   become: true
   roles:
-    - role: geerlingguy.postgresql
+    - patch-sudoers
+    - geerlingguy.postgresql
