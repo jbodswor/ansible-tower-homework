@@ -6,7 +6,8 @@
     cloud: ospcloud
   register: result
 
-- add_host:
+- name: Adding hosts to in-mamory inventory
+  add_host:
     group: "{{ item.metadata.group }}"
     name: "{{ item.public_v4 }}"
   with_items: "{{ result.ansible_facts.openstack_servers }}"
