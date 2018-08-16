@@ -1,22 +1,16 @@
 ---
 # Playbook to smoke test frontend on osp
 
-- hosts: jumpbox
+- hosts: frontends
   gather_facts: false
   become: yes
   tasks:
-  - name: OpenStack frontend servers
-    os_server_facts:
-      cloud: ospcloud
-      server: 'frontend'
-    register: result
-
   - name: Check that you can curl the frontends
     uri:
-      url: "http://{{ item.public_v4 }}"
+      url: "http://{{ item }}"
       return_content: yes
     with_items:
-      - "{{ result.ansible_facts.openstack_servers }}"
+      - "{{ inventory_hostname }}"
     register: webpage
 
   - name: Fail if status not 200
