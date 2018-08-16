@@ -9,19 +9,19 @@
     - base-config
 
 - name: Deploy haproxy
-  hosts: tag_AnsibleGroup_frontends
+  hosts: frontends
   become: true
   roles:
     - haproxy
 
 - name: Deploy Tomcat
-  hosts: tag_AnsibleGroup_apps
+  hosts: apps
   become: true
   roles:
     - tomcat
 
 - name: Deploy PostgreSQL
-  hosts: tag_AnsibleGroup_appdbs
+  hosts: appdbs
   become: true
   roles:
     - patch-sudoers
