@@ -1,0 +1,22 @@
+---
+# Playbook to provision instances on osp
+
+- hosts: bastion
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Provision the AWS environment
+      shell: hostname | awk -F"." '{print $2}'
+      register: guid
+
+    - name: Edit tower inventory file
+      replace:
+        path: /root/ansible-tower-setup-3.2.5/inventory
+        regexp: 'bastion\..{4}\.example\.com'
+        replace: 'bastion\.{{ guid }}\.example\.com'
+        backup: yes
+
+    # - name: Execute the tower setup script to add aws isolated node
+    #   shell: /root/ansible-tower-setup-3.2.5/setup.sh
+    #   args:
+    #     chdir: /root
