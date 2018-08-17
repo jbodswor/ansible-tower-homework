@@ -1,0 +1,61 @@
+---
+# Playbook to provision instances on osp
+
+- hosts: bastion
+  become: yes
+  gather_facts: true
+  tasks:
+  - name: Install required packages on aws bastion
+    yum: 
+     name: "{{item}}"
+     state: latest 
+    loop: 
+      - python 
+      - python-pip 
+      - python-devel 
+      - gcc
+
+  - name: Install tower-cli on aws bastion
+    pip:
+     name: ansible-tower-cli
+     state: latest
+
+  - name: Get ssh key file name
+    shell: (cd /root/.ssh; find . -maxdepth 1 -type f -iname '*key.pem')| cut -d'/' -f2
+    register: keyfile
+
+  - name: Create/override aws-ec2-credential
+    tower_credential:
+      name: aws-ec2-credential
+      organization: Default
+      state: present
+      kind: ssh
+      tower_host: tower1.{{tower_guid}}.example.opentlc.com
+      tower_username: admin
+      tower_password: r3dh4t1!
+      ssh_key_data: "/root/.ssh/{{ keyfile.stdout }}"
+      username: ec2-user
+
+  - name: Update aws-three-tier-app job template
+    tower_job_template:
+      name: "aws-three-tier-app"
+      machine_credential: "aws-ec2-credential"
+      tower_host: tower1.{{tower_guid}}.example.opentlc.com
+      tower_username: admin
+      tower_password: r3dh4t1!
+      state: present
+      job_type: run
+      playbook: aws-three-tier-app.yml
+      project: "ansible-tower-homework"
+
+  - name: Update aws-smoketest job template
+    tower_job_template:
+      name: "aws-smoketest"
+      machine_credential: "aws-ec2-credential"
+      tower_host: tower1.{{tower_guid}}.example.opentlc.com
+      tower_username: admin
+      tower_password: r3dh4t1!
+      state: present
+      job_type: run
+      playbook: aws-smoketest.yml
+      project: "ansible-tower-homework"
