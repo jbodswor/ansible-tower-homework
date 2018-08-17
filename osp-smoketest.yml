@@ -5,6 +5,10 @@
   gather_facts: false
   become: yes
   tasks:
+  - name: Sleep before trying to run the osp smoke test
+    pause:
+      minutes: 1
+  
   - name: OpenStack frontend servers
     os_server_facts:
       cloud: ospcloud
