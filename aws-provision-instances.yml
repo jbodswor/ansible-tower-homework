@@ -1,0 +1,53 @@
+---
+# Playbook to provision instances on osp
+
+- hosts: bastion
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Create /root/bin directory
+      file:
+        path: /root/bin
+        state: directory
+
+    - name: wget common.sh script from opentlc.com
+      get_url:
+        url: "http://www.opentlc.com/download/ansible_bootcamp/scripts/common.sh"
+        dest: /root/common.sh
+        mode: 0755
+
+    - name: wget jq file from opentlc.com
+      get_url: 
+        url: "http://www.opentlc.com/download/ansible_bootcamp/scripts/jq-linux64"
+        dest: /root/bin/jq
+        mode: 0755
+
+    - name: wget order_svc.sh script from opentlc.com
+      get_url:
+        url: "http://www.opentlc.com/download/ansible_bootcamp/scripts/order_svc.sh"
+        dest: /root/order_svc.sh
+        mode: 0755
+
+    - name: Make the credentials file
+      copy:
+        content: |
+          export username=j.bodsworth-leonardo.com.au
+          export password={{ password }}
+          export uri=https://labs.opentlc.com
+        dest: /root/credential.rc
+        mode: 0755
+
+    - name: Fix all jq references in the provisioning scripts
+      shell: "sed -i 's/ jq/ bin\\/jq/g' {{ item }}"
+      with_items:
+        - /root/common.sh
+        - /root/order_svc.sh
+
+    - name: Provision the AWS environment
+      shell: source /root/credential.rc ; /root/order_svc.sh -c 'OPENTLC Automation' -i 'Three Tier Application' -t 1 -y
+      args:
+        chdir: /root
+
+    - name: Sleep before trying to deploy the three tier app
+      pause:
+        minutes: 10 
